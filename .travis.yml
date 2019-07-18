@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t spencerwang/react-test -f ./clinet/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true spencerwang/docker-react npm run test
+
+after_success:
+  - docker build -t spencerwang/multi-client ./client
+  - docker build -t spencerwang/multi-nginx ./nginx
+  - dokcer build -t spencerwang/multi-server ./server
+  - dokcer build -t spencerwang/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PWD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push spencerwang/multi-client
+  - docker push spencerwang/multi-nginx
+  - docker push spencerwang/multi-server
+  - docker push spencerwang/multi-worker
