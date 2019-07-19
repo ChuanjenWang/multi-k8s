@@ -8,20 +8,20 @@ before_install:
 script:
   - docker run -e CI=true spencerwang/react-test npm run test
 
-# after_success:
-#   - docker build -t spencerwang/multi-client ./client
-#   - docker build -t spencerwang/multi-nginx ./nginx
-#   - docker build -t spencerwang/multi-server ./server
-#   - docker build -t spencerwang/multi-worker ./worker
-#   # Log in to the docker CLI
-#   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-#   # Take those images and push them to docker hub
-#   - docker push spencerwang/multi-client
-#   - docker push spencerwang/multi-nginx
-#   - docker push spencerwang/multi-server
-#   - docker push spencerwang/multi-worker
+after_success:
+  - docker build -t spencerwang/multi-client ./client
+  - docker build -t spencerwang/multi-nginx ./nginx
+  - docker build -t spencerwang/multi-server ./server
+  - docker build -t spencerwang/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push spencerwang/multi-client
+  - docker push spencerwang/multi-nginx
+  - docker push spencerwang/multi-server
+  - docker push spencerwang/multi-worker
 
-depoly:
+deploy:
   provider: elasticbeanstalk
   region: us-west-1
   app: multi-docker
